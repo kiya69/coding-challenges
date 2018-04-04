@@ -1,6 +1,5 @@
 import React, { PropTypes } from 'react';
 import { hashHistory } from 'react-router';
-// import './styles.sass';
 
 const propTypes = {
     items: PropTypes.array.isRequired,
@@ -15,29 +14,27 @@ const defaultProps = {
 class Pagination extends React.Component {
     constructor(props) {
         super(props);
-        let currPage = location.hash.split('/')[2] || this.props.initialPage;
-        // let currPage = this.props.currentPage || this.props.initialPage;
-        this.state = { pager: {}, currPage: currPage, maxPage: 10};
+        // let currPage = location.hash.split('/')[2] || this.props.initialPage;
+        console.log(props.currentPage);
+        let currPage = location.hash.split('/')[2] || props.currPage;// this.props.initialPage;
+        this.state = { pager: {}, currPage: currPage};
     }
 
       componentWillMount() {
           // set page if items array isn't empty
           if (this.props.items && this.props.items.length) {
-              // this.setState({items: this.props.items});
-              // this.setPage(this.props.currentPage ? this.props.currentPage : this.props.initialPage);
-
-              // this.setPage(this.props.initialPage);
               this.setPage(this.state.currPage);
           }
       }
-
+      componentWillReceiveProps(newProps){
+        this.setState({currPage: newProps.currPage})
+      }
       componentDidUpdate(prevProps) {
           // reset page if items array has changed
           if (this.props.items !== prevProps.items) {
-              // this.setPage(this.props.currentPage ? this.props.currentPage : this.props.initialPage);
               this.setPage(this.state.currPage);
-              // this.setPage(this.props.initialPage);
           }
+          window.scrollTo(0, 0);
       }
 
     updatePage(){
@@ -50,21 +47,14 @@ class Pagination extends React.Component {
         window.removeEventListener("resize", this.updatePage.bind(this));
     }
     setPage(page) {
-        // var items = newProps ? newProps.items : this.state.items;
         var items = this.props.items;
         var pager = this.state.pager;
-        // let page = this.state.currPage || _page
-        // if(isFromClick){
-        //   return;
-        // }
-        // debugger
-        // browserHistory.push('/page/'+page);
 
         if (page < 1 || page > pager.totalPages) {
             return;
         }
 
-        hashHistory.replace('/page/'+page);
+        // hashHistory.replace('/page/'+page);
         this.setState({currPage: page})
         // get new pager object for specified page
         pager = this.getPager(items.length, page);
@@ -74,21 +64,13 @@ class Pagination extends React.Component {
 
         // update state
         this.setState({ pager: pager });
-        // this.setState({ pager: pager }, () => browserHistory.push('page/' + this.state.pager.currentPage));
 
         // call change page function in parent component
-        this.props.onChangePage(pageOfItems);
-
-        // hashHistory.replace('/page/'+page);
-        // console.log('this.props.location',this.props.location);
-        // Router.replace('/page/'+page);
-        // browserHistory.push('/page/'+page);
-
+        this.props.onChangePage(pageOfItems, page);
     }
 
     getPager(totalItems, currentPage, pageSize) {
         // default to first page
-        console.log('this.state.currPage',this.state.currPage);
         currentPage = currentPage || 1;
 
         // default page size is 10
@@ -99,14 +81,12 @@ class Pagination extends React.Component {
 
         var startPage, endPage, maxPage;
         if(window.innerWidth >= 667){
-          this.setState({maxPage: 10})
           maxPage = 10;
         } else {
-          this.setState({maxPage: 3})
-          maxPage = 3;
+          maxPage = 3; // for mobile & small screens
         }
         if (totalPages <= maxPage) {
-            // less than 10 total pages so show all
+            // less than maxPage so show all
             startPage = 1;
             endPage = totalPages;
         } else {
@@ -130,7 +110,6 @@ class Pagination extends React.Component {
         var pages = []// _.range(startPage, endPage + 1);
         let page = startPage;
         for(var i = startPage; i <= endPage; i++){
-          // debugger
           pages.push(page);
           page++;
         }
@@ -155,34 +134,6 @@ class Pagination extends React.Component {
             // don't display pager if there is only 1 page
             return null;
         }
-        // var paginationStyle= {
-        //   position: 'absolute',
-        //   left: '50%',
-        //   transform: 'translate(-50%,0)',
-        //   width: '616px'
-        // }
-// browserHistory.push('/page/'+page);
-
-// <li className={(pager.currentPage == 1 ? 'disabled' : pager.currentPage)}>
-//     <Link to={"/page/" + 1} onClick={() => this.setPage(1)}>First</Link>
-// </li>
-// <li className={pager.currentPage == 1 ? 'disabled' : ''}>
-//     <Link to={"/page/" + ((pager.currentPage - 1) == 0 ? 1 : (pager.currentPage - 1))} onClick={() => this.setPage(pager.currentPage - 1)}>Previous</Link>
-// </li>
-// {pager.pages.map((page, index) =>
-//     <li key={index} className={pager.currentPage == page ? 'active' : ''}>
-//         <Link to={"/page/" + page} onClick={() => this.setPage(page)}>{page}</Link>
-//     </li>
-// )}
-// <li className={pager.currentPage == pager.totalPages ? 'disabled' : ''}>
-//     <Link to={"/page/" +  (parseInt(pager.currentPage) + 1) } onClick={() => this.setPage(pager.currentPage + 1)}>Next</Link>
-// </li>
-// <li className={pager.currentPage == pager.totalPages ? 'disabled' : ''}>
-//     <Link to={"/page/" + pager.totalPages} onClick={() => this.setPage(pager.totalPages)}>Last</Link>
-// </li>
-
-  // <div className="pagination-wrapper">
-  // </div>
         return (
           <div className="text-center">
             <ul className={"pagination" + (window.innerWidth < 667 ? " pagination-sm" : "")}>
