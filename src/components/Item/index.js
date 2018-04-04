@@ -15,8 +15,8 @@ class Item extends Component {
       <div className="item">
         <div className="content" onClick={() => this.linkToProduct(productUrl)} >
           <img className='product-image' src={this.props.myData.image} />
-          <div className='productText'>
-              <div className='perfumeName'>{this.props.myData.name.split('Eau de')[0]}</div>
+          <div className='product-text'>
+              <div className='perfume-name'>{this.props.myData.name.split('Eau de')[0]}</div>
               <div className='perfume-type'>{this.props.myData.type}</div>
               <div className="price">{price} € /  {this.props.myData.size}</div>
           </div>

@@ -4,41 +4,33 @@ import Item from '../Item/index';
 import Pagination from '../Pagination/Pagination';
 import { hashHistory} from 'react-router';
 
-import myData from '../../assets/productlist.json';
+import perfumeData from '../../assets/productlist.json';
 class Homepage extends Component {
   constructor() {
-        super();
+      super();
 
-        var exampleItems = myData;
-        this.state = {
-            exampleItems: exampleItems,
-            pageOfItems: [],
-            currPage: 1
-        };
+      this.state = {
+          perfumeItems: perfumeData,
+          pageOfItems: [],
+          currPage: 1,
+          pageSize: 9
+      };
 
-        // bind function in constructor instead of render (https://github.com/yannickcr/eslint-plugin-react/blob/master/docs/rules/jsx-no-bind.md)
-        this.onChangePage = this.onChangePage.bind(this);
-        this.onSelectChange = this.onSelectChange.bind(this);
-    }
-  // componentWillMount(){
-  //   if(this.state.sortBy && this.state.sortBy == 'price'){
-  //     this.sortByPrice();
-  //   }
-  // }
+      // bind function in constructor instead of render (https://github.com/yannickcr/eslint-plugin-react/blob/master/docs/rules/jsx-no-bind.md)
+      this.onChangePage = this.onChangePage.bind(this);
+      this.onSelectSoryByChange = this.onSelectSoryByChange.bind(this);
+      this.onSelectNumberChange = this.onSelectNumberChange.bind(this);
+  }
+
   onChangePage(pageOfItems, page) {
     // update state with new page of items
     this.setState({ pageOfItems:  pageOfItems});
-    hashHistory.replace('/page/'+page);
-
   }
   //type = price, rating, name etc
   //order = low to high vise versa
   sortData(type, order) {
 
-    let newData = this.state.exampleItems.slice(0);
-    // hashHistory.replace('/page/1');
-    // this.setState({currPage: 1})
-
+    let newData = this.state.perfumeItems.slice(0);
     let newOrder = order === 'lowest' ? -1 : 1;
 
     newData.sort((a, b) => {
@@ -48,9 +40,9 @@ class Homepage extends Component {
         return -newOrder;
       return 0;
     })
-    this.setState({ exampleItems: newData});
+    this.setState({ perfumeItems: newData});
   }
-  onSelectChange(){
+  onSelectSoryByChange(){
     let value = document.getElementById("sort-option").value;
     if(!value) return;
     let type = value.split(' ')[0];
@@ -59,10 +51,16 @@ class Homepage extends Component {
     this.setState({currPage: 1});
   }
 
+  onSelectNumberChange(){
+    let value = document.getElementById("select-num-to-show").value;
+    if(!value) return;
+
+    this.setState({pageSize: parseInt(value)});
+  }
   render() {
     return (
       <div>
-          <select className="form-control" id="sort-option" onChange={this.onSelectChange}>
+          <select className="form-control" id="sort-option" onChange={this.onSelectSoryByChange}>
               <option value=''>Sort by</option>
               <option value='price lowest'>Price: Low to High</option>
               <option value='price highestt'>Price: High to Low</option>
@@ -70,10 +68,18 @@ class Homepage extends Component {
               <option value='name lowest'>Name: A - Z</option>
               <option value='name highest'>Name: Z - A</option>
           </select>
+
+          <select className="form-control" id="select-num-to-show" onChange={this.onSelectNumberChange}>
+              <option value='9'>Select number of items to show</option>
+              <option value='10'>10</option>
+              <option value='30'>30</option>
+              <option value='60'>60</option>
+              <option value='120'>120</option>
+          </select>
           <main className="main">
-              {this.state.pageOfItems.map((item, index) =><Item key={index} myData={item}/>)}
+              {this.state.pageOfItems.map((item, index) => <Item key={index} myData={item} />)}
           </main>
-          <Pagination items={this.state.exampleItems} onChangePage={this.onChangePage} currPage={this.state.currPage} />
+          <Pagination items={this.state.perfumeItems} onChangePage={this.onChangePage} currPage={this.state.currPage} pageSize={this.state.pageSize} />
       </div>
     );
   }

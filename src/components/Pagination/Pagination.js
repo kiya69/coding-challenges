@@ -8,16 +8,16 @@ const propTypes = {
 }
 
 const defaultProps = {
-    initialPage: 1
+    initialPage: 1,
+    initialPageSize: 9
 }
 
 class Pagination extends React.Component {
     constructor(props) {
         super(props);
-        // let currPage = location.hash.split('/')[2] || this.props.initialPage;
-        console.log(props.currentPage);
-        let currPage = location.hash.split('/')[2] || props.currPage;// this.props.initialPage;
-        this.state = { pager: {}, currPage: currPage};
+        let currPage = location.hash.split('/')[2] || props.currPage;
+        let pageSize = props.pageSize || this.props.initialPageSize;
+        this.state = { pager: {}, currPage: currPage, pageSize: pageSize};
     }
 
       componentWillMount() {
@@ -27,11 +27,11 @@ class Pagination extends React.Component {
           }
       }
       componentWillReceiveProps(newProps){
-        this.setState({currPage: newProps.currPage})
+        this.setState({currPage: newProps.currPage, pageSize: newProps.pageSize})
       }
       componentDidUpdate(prevProps) {
           // reset page if items array has changed
-          if (this.props.items !== prevProps.items) {
+          if (this.props.items !== prevProps.items || this.props.pageSize !== prevProps.pageSize) {
               this.setPage(this.state.currPage);
           }
           window.scrollTo(0, 0);
@@ -46,15 +46,14 @@ class Pagination extends React.Component {
     componentWillUnmount() {
         window.removeEventListener("resize", this.updatePage.bind(this));
     }
-    setPage(page) {
+    setPage(page, e) {
         var items = this.props.items;
         var pager = this.state.pager;
-
-        if (page < 1 || page > pager.totalPages) {
+        if (page < 1 || page > pager.totalPages || (e && e.target.parentElement.className.indexOf('disabled') > -1)) {
             return;
         }
 
-        // hashHistory.replace('/page/'+page);
+        hashHistory.replace('/page/'+page);
         this.setState({currPage: page})
         // get new pager object for specified page
         pager = this.getPager(items.length, page);
@@ -69,12 +68,12 @@ class Pagination extends React.Component {
         this.props.onChangePage(pageOfItems, page);
     }
 
-    getPager(totalItems, currentPage, pageSize) {
+    getPager(totalItems, currentPage) {
         // default to first page
         currentPage = currentPage || 1;
 
         // default page size is 10
-        pageSize = pageSize || 9;
+        let pageSize = this.state.pageSize || 9;
 
         // calculate total pages
         var totalPages = Math.ceil(totalItems / pageSize);
@@ -138,7 +137,7 @@ class Pagination extends React.Component {
           <div className="text-center">
             <ul className={"pagination" + (window.innerWidth < 667 ? " pagination-sm" : "")}>
                 <li className={pager.currentPage == 1 ? 'disabled' : ''}>
-                    <a onClick={() => this.setPage(1)}>First</a>
+                    <a onClick={(e) => this.setPage(1, e)}>First</a>
                 </li>
                 <li className={pager.currentPage == 1 ? 'disabled' : ''}>
                     <a onClick={() => this.setPage(pager.currentPage - 1)}>Previous</a>
@@ -152,7 +151,7 @@ class Pagination extends React.Component {
                     <a onClick={() => this.setPage(parseInt(pager.currentPage )+ 1)}>Next</a>
                 </li>
                 <li className={pager.currentPage == pager.totalPages ? 'disabled' : ''}>
-                    <a onClick={() => this.setPage(pager.totalPages)}>Last</a>
+                    <a onClick={(e) => this.setPage(pager.totalPages, e)}>Last</a>
                 </li>
             </ul>
           </div>
