@@ -34,7 +34,6 @@ class Pagination extends React.Component {
           if (this.props.items !== prevProps.items || this.props.pageSize !== prevProps.pageSize) {
               this.setPage(this.state.currPage);
           }
-          window.scrollTo(0, 0);
       }
 
     updatePage(){
@@ -51,6 +50,9 @@ class Pagination extends React.Component {
         var pager = this.state.pager;
         if (page < 1 || page > pager.totalPages || (e && e.target.parentElement.className.indexOf('disabled') > -1)) {
             return;
+        }
+        if(e){
+            window.scrollTo(0, 0);
         }
 
         hashHistory.replace('/page/'+page);
@@ -140,15 +142,15 @@ class Pagination extends React.Component {
                     <a onClick={(e) => this.setPage(1, e)}>First</a>
                 </li>
                 <li className={pager.currentPage == 1 ? 'disabled' : ''}>
-                    <a onClick={() => this.setPage(pager.currentPage - 1)}>Previous</a>
+                    <a onClick={(e) => this.setPage(pager.currentPage - 1, e)}>Previous</a>
                 </li>
                 {pager.pages.map((page, index) =>
                     <li key={index} className={pager.currentPage == page ? 'active' : ''}>
-                        <a onClick={() => this.setPage(page)}>{page}</a>
+                        <a onClick={(e) => this.setPage(page, e)}>{page}</a>
                     </li>
                 )}
                 <li className={pager.currentPage == pager.totalPages ? 'disabled' : ''}>
-                    <a onClick={() => this.setPage(parseInt(pager.currentPage )+ 1)}>Next</a>
+                    <a onClick={(e) => this.setPage(parseInt(pager.currentPage )+ 1, e)}>Next</a>
                 </li>
                 <li className={pager.currentPage == pager.totalPages ? 'disabled' : ''}>
                     <a onClick={(e) => this.setPage(pager.totalPages, e)}>Last</a>

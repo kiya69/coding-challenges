@@ -69,6 +69,11 @@ class Homepage extends Component {
               <option value='name highest'>Name: Z - A</option>
           </select>
 
+          <main className="main">
+              {this.state.pageOfItems.map((item, index) => <Item key={index} myData={item} />)}
+          </main>
+          <Pagination items={this.state.perfumeItems} onChangePage={this.onChangePage} currPage={this.state.currPage} pageSize={this.state.pageSize} />
+
           <select className="form-control" id="select-num-to-show" onChange={this.onSelectNumberChange}>
               <option value='9'>Select number of items to show</option>
               <option value='10'>10</option>
@@ -76,10 +81,6 @@ class Homepage extends Component {
               <option value='60'>60</option>
               <option value='120'>120</option>
           </select>
-          <main className="main">
-              {this.state.pageOfItems.map((item, index) => <Item key={index} myData={item} />)}
-          </main>
-          <Pagination items={this.state.perfumeItems} onChangePage={this.onChangePage} currPage={this.state.currPage} pageSize={this.state.pageSize} />
       </div>
     );
   }
