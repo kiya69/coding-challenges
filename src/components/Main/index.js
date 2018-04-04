@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import './styles.sass';
 import Item from '../Item/index';
 import Pagination from '../Pagination/Pagination';
-import { hashHistory} from 'react-router';
+// import { hashHistory} from 'react-router';
 
 import perfumeData from '../../assets/productlist.json';
 class Homepage extends Component {
@@ -22,7 +22,7 @@ class Homepage extends Component {
       this.onSelectNumberChange = this.onSelectNumberChange.bind(this);
   }
 
-  onChangePage(pageOfItems, page) {
+  onChangePage(pageOfItems) {
     // update state with new page of items
     this.setState({ pageOfItems:  pageOfItems});
   }
