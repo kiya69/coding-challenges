@@ -22,9 +22,9 @@ class Homepage extends Component {
       this.onSelectNumberChange = this.onSelectNumberChange.bind(this);
   }
 
-  onChangePage(pageOfItems) {
+  onChangePage(pageOfItems, page) {
     // update state with new page of items
-    this.setState({ pageOfItems:  pageOfItems});
+    this.setState({ pageOfItems:  pageOfItems, currPage: page});
   }
   //type = price, rating, name etc
   //order = low to high vise versa
