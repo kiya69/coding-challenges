@@ -39,7 +39,7 @@ class Pagination extends React.Component {
     updatePage(){
       this.setPage(this.state.currPage);
     }
-    componentDidMount() {
+    componentDidMount() { // if screen size changed, update the pagination size (maxPage)
         window.addEventListener("resize", this.updatePage.bind(this));
     }
     componentWillUnmount() {
@@ -51,7 +51,7 @@ class Pagination extends React.Component {
         if (page < 1 || page > pager.totalPages || (e && e.target.parentElement.className.indexOf('disabled') > -1)) {
             return;
         }
-        if(e){
+        if(e){ //if the call is coming from user click
             window.scrollTo(0, 0);
         }
 
@@ -74,7 +74,7 @@ class Pagination extends React.Component {
         // default to first page
         currentPage = currentPage || 1;
 
-        // default page size is 10
+        // default page size is 9
         let pageSize = this.state.pageSize || 9;
 
         // calculate total pages
@@ -90,7 +90,7 @@ class Pagination extends React.Component {
             // less than maxPage so show all
             startPage = 1;
             endPage = totalPages;
-        } else {
+        } else { // to keep the currentPage in the middle, so you compare with maxPage/2
             if (currentPage <= Math.floor(maxPage / 2) + 1) {
                 startPage = 1;
                 endPage = maxPage;
